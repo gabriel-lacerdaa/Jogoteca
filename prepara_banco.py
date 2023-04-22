@@ -76,4 +76,25 @@ for user in cursor.fetchall():
     print(user[1])
 
 
+# inserindo jogos
+jogos_sql = 'INSERT INTO jogos (nome, categoria, console) VALUES (%s, %s, %s)'
+jogos = [
+      ('Tetris', 'Puzzle', 'Atari'),
+      ('God of War', 'Hack n Slash', 'PS2'),
+      ('Mortal Kombat', 'Luta', 'PS2'),
+      ('Valorant', 'FPS', 'PC'),
+      ('Crash Bandicoot', 'Hack n Slash', 'PS2'),
+      ('Need for Speed', 'Corrida', 'PS2'),
+]
+cursor.executemany(jogos_sql, jogos)
+
+cursor.execute('select * from jogoteca.jogos')
+print(' -------------  Jogos:  -------------')
+for jogo in cursor.fetchall():
+    print(jogo[1])
+
+# commitando se não nada tem efeito
+conn.commit()
+
+cursor.close()
 conn.close()
