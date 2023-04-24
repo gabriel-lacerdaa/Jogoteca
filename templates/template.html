@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JogoTeca</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
 </head>
 <body>
     <div class="container">
@@ -31,6 +32,7 @@
 
         {% endblock %}
 
+        <script src="{{ url_for('static', filename='app.js') }}"></script>    
     </div>
 </body>
 </html>

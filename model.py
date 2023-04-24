@@ -1,4 +1,4 @@
-from app import app, db
+from app import db
 
 
 class Jogos(db.Model):
@@ -8,7 +8,7 @@ class Jogos(db.Model):
     console = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
-        return f'<Name {self.name}>'
+        return f'<Name {self.nome}>'
 
 
 class Usuarios(db.Model):
