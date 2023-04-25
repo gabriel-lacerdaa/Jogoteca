@@ -2,7 +2,7 @@ from flask import render_template, redirect, request, session, flash, url_for, s
 from app import app, db
 from model import Jogos, Usuarios
 import os
-
+from helpers import salvarCapa, deletaCapa, FormularioJogo
 
 @app.route('/')
 def index():
@@ -13,7 +13,8 @@ def index():
 @app.route('/novo')
 def novo():
     if ("usuario_logado" in session) and (session["usuario_logado"] is not None):
-        return render_template("novo.html", titulo="Novo Jogo")
+        form = FormularioJogo()
+        return render_template("novo.html", titulo="Novo Jogo", form=form)
     else:
         flash('É necessário fazer um login para incluir um novo jogo')
         return redirect(url_for('login', proxima=url_for('novo')))
@@ -26,13 +27,17 @@ def criar():
         flash('Esse jogo já existe')
         return redirect(url_for('index'))
     else:
-        newJogo = Jogos(nome=request.form["nome"], categoria=request.form["categoria"], console=request.form["console"])
+        form = FormularioJogo(request.form)
+        if not form.validate_on_submit():
+            return redirect(url_for('novo'))
+
+        newJogo = Jogos(form.nome.data, form.categoria.data, form.console.data)
         db.session.add(newJogo)
         db.session.commit()
-        #Criar função para salvar
-        uploads_path = app.config["UPLOAD_PATH"]
         arquivo = request.files['arquivo']
-        arquivo.save(f'{uploads_path}/Capa{newJogo.id}.jpg')    
+        if arquivo.filename != 'capa_padrao.jpg' and arquivo.filename != '':
+            salvarCapa(newJogo, arquivo)
+        
         return redirect(url_for('index'))
 
 
@@ -46,8 +51,12 @@ def editar(id):
             imagem = f'Capa{str(jogo.id)}.jpg'
         else:
             imagem = 'capa_padrao.jpg'
-        print(imagem)
-        return render_template("editar.html", titulo="Editar Jogo", jogo=jogo, imagem=imagem)
+
+        form = FormularioJogo()
+        form.nome.data = jogo.nome
+        form.categoria.data = jogo.categoria
+        form.console.data = jogo.console
+        return render_template("editar.html", titulo="Editar Jogo", id=id, imagem=imagem, form=form)
     else:
         flash('É necessário fazer um login para editar um jogo')
         return redirect(url_for('login', proxima=url_for('editar',id=id)))
@@ -55,16 +64,17 @@ def editar(id):
 
 @app.route('/atualizar', methods=["POST"])
 def atualizar():
-    jogo = Jogos.query.filter_by(id=request.form['id']).first()
-    jogo.nome = request.form["nome"]
-    jogo.categoria = request.form["categoria"]
-    jogo.console = request.form["console"]
-    db.session.add(jogo)
-    db.session.commit()
-    #Criar função para salvar
-    uploads_path = app.config["UPLOAD_PATH"]
-    arquivo = request.files['arquivo']
-    arquivo.save(f'{uploads_path}/Capa{jogo.id}.jpg')
+    form = FormularioJogo(request.form)
+    if form.validate_on_submit():  
+        jogo = Jogos.query.filter_by(id=request.form['id']).first()
+        jogo.nome = form.nome.data
+        jogo.categoria = form.categoria.data
+        jogo.console = form.console.data
+        db.session.add(jogo)
+        db.session.commit()
+        arquivo = request.files['arquivo']
+        if arquivo.filename != '':
+            salvarCapa(jogo, arquivo)
     return redirect(url_for('index'))
 
 
@@ -73,9 +83,7 @@ def deletar(id):
     if ("usuario_logado" in session) and (session["usuario_logado"] is not None):
         Jogos.query.filter_by(id=id).delete()
         db.session.commit()
-        caminho_da_imagem = f'{app.config["UPLOAD_PATH"]}/Capa{str(id)}.jpg'
-        if os.path.isfile(caminho_da_imagem):
-            os.remove(os.path.join(app.config["UPLOAD_PATH"], f'Capa{str(id)}.jpg'))
+        deletaCapa(id)
         return redirect(url_for('index'))
     else:
         flash('Necessário fazer o login para excluir um Jogo da lista')
