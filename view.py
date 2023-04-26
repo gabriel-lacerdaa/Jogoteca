@@ -2,7 +2,7 @@ from flask import render_template, redirect, request, session, flash, url_for, s
 from app import app, db
 from model import Jogos, Usuarios
 import os
-from helpers import salvarCapa, deletaCapa, FormularioJogo
+from helpers import salvarCapa, deletaCapa, FormularioJogo, FormularioLogin
 
 @app.route('/')
 def index():
@@ -93,14 +93,16 @@ def deletar(id):
 @app.route('/login')
 def login():
     proxima = request.args.get("proxima")
-    return render_template("login.html", proxima=proxima)
+    form = FormularioLogin()
+    return render_template("login.html", proxima=proxima, form=form)
 
 
 @app.route('/autenticar', methods=["POST"])
 def autenticar():
-    usuario = Usuarios.query.filter_by(nickname=request.form['usuario']).first()
+    form = FormularioLogin(request.form)
+    usuario = Usuarios.query.filter_by(nickname=form.nickname.data).first()
     if usuario:
-        if usuario.senha == request.form["senha"]:
+        if usuario.senha == form.senha.data:
             session["usuario_logado"] = usuario.nickname
             flash(f'{session["usuario_logado"]} logado com sucesso!')
             proxima_pagina = request.form["proxima"]
