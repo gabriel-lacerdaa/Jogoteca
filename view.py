@@ -3,6 +3,7 @@ from app import app, db
 from model import Jogos, Usuarios
 import os
 from helpers import salvarCapa, deletaCapa, FormularioJogo, FormularioLogin
+from flask_bcrypt import check_password_hash
 
 @app.route('/')
 def index():
@@ -102,7 +103,9 @@ def autenticar():
     form = FormularioLogin(request.form)
     usuario = Usuarios.query.filter_by(nickname=form.nickname.data).first()
     if usuario:
-        if usuario.senha == form.senha.data:
+                     #hash guardado no servidor | senha digitada
+        senha = check_password_hash(usuario.senha, form.senha.data)
+        if senha:
             session["usuario_logado"] = usuario.nickname
             flash(f'{session["usuario_logado"]} logado com sucesso!')
             proxima_pagina = request.form["proxima"]
@@ -112,9 +115,9 @@ def autenticar():
                 return redirect(url_for('index'))
             else:
                 return redirect(proxima_pagina)
-    else:
-        flash(' Usuario não existe, ou senha invalida')
-        return redirect(url_for('login'))
+
+    flash(' Usuario não existe, ou senha invalida')
+    return redirect(url_for('login'))
 
 
 @app.route("/logout")

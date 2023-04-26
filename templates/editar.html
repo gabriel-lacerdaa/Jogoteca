@@ -1,32 +1,31 @@
 {% extends "template.html" %}
 {% block conteudo %}
-      <form action="{{ url_for('atualizar', id=id) }}" method="Post" enctype="multipart/form-data">
-          <figure class="img thumbnail col-md-4">
-            <img class="img-fluid img-padrao" src="{{ url_for('imagem', nome_arquivo=imagem) }}">
-            <figcaption>
-              <label class="fileContainer">
-                Mudar Capa
-                <input class="file-input" type="file" name="arquivo" accept=".jpg">
-              </label>
-            </figcaption>
-          </figure>
-
-          <fieldset>
+      <form class="formularioJogo" action="{{ url_for('atualizar', id=id) }}" method="Post" enctype="multipart/form-data">
+        <figure class="img thumbnail col-md-4 formularioImagem">
+          <img class="img-fluid img-padrao" src="{{ url_for('imagem', nome_arquivo=imagem) }}">
+          <figcaption>
+            <label class="fileContainer">
+              Mudar Capa
+              <input class="file-input" type="file" name="arquivo" accept=".jpg">
+            </label>
+          </figcaption>
+        </figure> 
+        <fieldset>
           {{ form.csrf_token() }}
-          <div class="form-group">
+          <div class="form-group inputBox">
             <input type="hidden" name="id" value="{{ id }}">
             {{ form.nome.label(class="form-label") }}
             {{ form.nome(class="form-control") }}
           </div>
-          <div class="form-group">
+          <div class="form-group inputBox">
             {{ form.categoria.label(class="form-label") }}
             {{ form.categoria(class="form-control") }}
           </div>
-          <div class="form-group">
+          <div class="form-group inputBox">
             {{ form.console.label(class="form-label") }}
             {{ form.console(class="form-control") }}
           </div>
-          <div style="margin-top: 10px;">
+          <div class="form-group buttons">
             {{ form.salvar(class="btn btn-primary") }}
             <a class="btn btn-danger" href="{{ url_for('index') }}">Voltar</a>
           </div>

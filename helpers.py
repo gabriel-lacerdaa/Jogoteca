@@ -3,6 +3,7 @@ from app import app
 from flask_wtf import FlaskForm
 from wtforms import StringField, validators, SubmitField, PasswordField
 
+
 # Classe para validar o formulario
 class FormularioJogo(FlaskForm):
     nome = StringField('Nome Do Jogo', [validators.DataRequired(), validators.Length(min=1, max=50)])

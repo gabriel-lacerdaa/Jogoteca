@@ -2,3 +2,5 @@ flask
 mysql-connector-python==8.0.28
 flask_sqlalchemy
 flask-wtf
+flask-bcrypt
+werkzeug

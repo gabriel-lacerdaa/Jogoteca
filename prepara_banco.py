@@ -1,5 +1,6 @@
 import mysql.connector
 from mysql.connector import errorcode
+from flask_bcrypt import generate_password_hash
 
 
 print('Conectando...')
@@ -61,9 +62,10 @@ for tabela_nome in TABLES:
 
 usuarios_sql = "INSERT INTO Usuarios(nome, nickname, senha) VALUES (%s, %s, %s)"
 
+#Aqui ao inves de salvar a senha direto no bancos, estou salvando um hash, para criptografar a senha do usuario
 usuarios = [
-    ("Gabriel", "Lacierda", "senha"),
-    ("usuarioTeste", 'Teste', 'senhateste')
+    ("Gabriel", "admin", generate_password_hash("admin").decode('utf-8')),
+    ("usuarioTeste", 'Teste', generate_password_hash("senhateste").decode('utf-8'))
 ]
 
 cursor.executemany(usuarios_sql, usuarios)
