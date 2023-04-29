@@ -3,3 +3,4 @@ conceitos abordados:
     -Integração com banco de dados
     -Sistema de login
     -CRUD
+    -Senha criptografada

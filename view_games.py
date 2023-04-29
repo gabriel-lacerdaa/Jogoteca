@@ -1,15 +1,14 @@
 from flask import render_template, redirect, request, session, flash, url_for, send_from_directory
 from app import app, db
-from model import Jogos, Usuarios
+from model import Jogos
 import os
-from helpers import salvarCapa, deletaCapa, FormularioJogo, FormularioLogin
-from flask_bcrypt import check_password_hash
+from helpers import salvarCapa, deletaCapa, FormularioJogo
+
 
 @app.route('/')
 def index():
     lista = Jogos.query.order_by(Jogos.id)
     return render_template("jogoteca.html", titulo="Jogos", jogos=lista)
-
 
 @app.route('/novo')
 def novo():
@@ -32,7 +31,8 @@ def criar():
         if not form.validate_on_submit():
             return redirect(url_for('novo'))
 
-        newJogo = Jogos(form.nome.data, form.categoria.data, form.console.data)
+        print("erro acontece aqui")
+        newJogo = Jogos(nome=form.nome.data, categoria=form.categoria.data, console=form.console.data)
         db.session.add(newJogo)
         db.session.commit()
         arquivo = request.files['arquivo']
@@ -89,42 +89,6 @@ def deletar(id):
     else:
         flash('Necessário fazer o login para excluir um Jogo da lista')
         return redirect(url_for('login'))
-
-
-@app.route('/login')
-def login():
-    proxima = request.args.get("proxima")
-    form = FormularioLogin()
-    return render_template("login.html", proxima=proxima, form=form)
-
-
-@app.route('/autenticar', methods=["POST"])
-def autenticar():
-    form = FormularioLogin(request.form)
-    usuario = Usuarios.query.filter_by(nickname=form.nickname.data).first()
-    if usuario:
-                     #hash guardado no servidor | senha digitada
-        senha = check_password_hash(usuario.senha, form.senha.data)
-        if senha:
-            session["usuario_logado"] = usuario.nickname
-            flash(f'{session["usuario_logado"]} logado com sucesso!')
-            proxima_pagina = request.form["proxima"]
-            print(proxima_pagina, type(proxima_pagina))
-            if proxima_pagina == 'None': proxima_pagina = None
-            if proxima_pagina is None:
-                return redirect(url_for('index'))
-            else:
-                return redirect(proxima_pagina)
-
-    flash(' Usuario não existe, ou senha invalida')
-    return redirect(url_for('login'))
-
-
-@app.route("/logout")
-def logout():
-    session["usuario_logado"] = None
-    flash('Usuario deslogado')
-    return redirect(url_for('index'))
 
 
 @app.route('/imagem/<nome_arquivo>')

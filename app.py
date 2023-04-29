@@ -9,10 +9,10 @@ app.config.from_pyfile('configs.py')
 db = SQLAlchemy(app)
 #Token de segurança
 csrf = CSRFProtect(app)
-
 bcrypt = Bcrypt(app)
 
-from view import *
+from view_user import *
+from view_games import *
 
 if __name__ == "__main__":
     app.run(host='localhost', debug=True)
