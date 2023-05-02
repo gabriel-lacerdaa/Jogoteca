@@ -1,5 +1,5 @@
 import os
-from app import app
+from application import app
 from flask_wtf import FlaskForm
 from wtforms import StringField, validators, SubmitField, PasswordField
 

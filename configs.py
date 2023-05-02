@@ -5,10 +5,10 @@ SECRET_KEY = 'senhamuitoultasecreta'
 
 infos_de_conexao = {
     'SGBD': 'mysql+mysqlconnector',
-    'usuario': 'root',
-    'senha': 'admin',
-    'servidor': 'localhost',
-    'database': 'jogoteca'
+    'usuario': 'admin',
+    'senha': '123456789',
+    'servidor': 'bancoaws.cwk0wcobxxss.us-east-1.rds.amazonaws.com',
+    'database': 'Jogoteca'
 }
 
 SQLALCHEMY_DATABASE_URI = \

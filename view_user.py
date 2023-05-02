@@ -1,6 +1,6 @@
 #Aqui vou colocar todas as rotas relacionadas ao usuario
 from flask import render_template, redirect, request, session, flash, url_for
-from app import app
+from application import app
 from model import Usuarios
 from helpers import FormularioLogin
 from flask_bcrypt import check_password_hash

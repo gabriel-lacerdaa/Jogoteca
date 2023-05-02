@@ -1,5 +1,5 @@
 from flask import render_template, redirect, request, session, flash, url_for, send_from_directory
-from app import app, db
+from application import app, db
 from model import Jogos
 import os
 from helpers import salvarCapa, deletaCapa, FormularioJogo
@@ -8,7 +8,7 @@ from helpers import salvarCapa, deletaCapa, FormularioJogo
 @app.route('/')
 def index():
     lista = Jogos.query.order_by(Jogos.id)
-    return render_template("jogoteca.html", titulo="Jogos", jogos=lista)
+    return render_template("jogoteca.html", titulo="Jogos", Jogos=lista)
 
 @app.route('/novo')
 def novo():

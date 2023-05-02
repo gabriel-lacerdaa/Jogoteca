@@ -6,9 +6,9 @@ from flask_bcrypt import generate_password_hash
 print('Conectando...')
 try:
     conn = mysql.connector.connect(
-        host='127.0.0.1',
-        user='root',
-        password='admin'
+        host='bancoaws.cwk0wcobxxss.us-east-1.rds.amazonaws.com',
+        user='admin',
+        password='123456789'
     )
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -28,7 +28,7 @@ cursor.execute("USE `Jogoteca`;")
 TABLES = {}
 
 TABLES["Jogos"] = ('''
-    CREATE TABLE `Jogos` (
+    CREATE TABLE `jogos` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `nome` VARCHAR(50) NOT NULL,
         `categoria` VARCHAR(40) NOT NULL,
@@ -38,7 +38,7 @@ TABLES["Jogos"] = ('''
 ''')
 
 TABLES["Usuarios"] = ('''
-    CREATE TABLE `Usuarios` (
+    CREATE TABLE `usuarios` (
         `nome` VARCHAR(50) NOT NULL,
         `nickname` VARCHAR(8) NOT NULL,
         `senha` VARCHAR(100) NOT NULL,
@@ -60,7 +60,7 @@ for tabela_nome in TABLES:
         print("OK")
 
 
-usuarios_sql = "INSERT INTO Usuarios(nome, nickname, senha) VALUES (%s, %s, %s)"
+usuarios_sql = "INSERT INTO usuarios(nome, nickname, senha) VALUES (%s, %s, %s)"
 
 #Aqui ao inves de salvar a senha direto no bancos, estou salvando um hash, para criptografar a senha do usuario
 usuarios = [
@@ -72,7 +72,7 @@ cursor.executemany(usuarios_sql, usuarios)
 
 conn.commit()
 
-cursor.execute("SELECT * FROM Jogoteca.Usuarios")
+cursor.execute("SELECT * FROM Jogoteca.usuarios")
 print("-"*10+' Usuarios '+'-'*10)
 for user in cursor.fetchall():
     print(user[1])
@@ -90,7 +90,7 @@ jogos = [
 ]
 cursor.executemany(jogos_sql, jogos)
 
-cursor.execute('select * from jogoteca.jogos')
+cursor.execute('select * from Jogoteca.jogos')
 print(' -------------  Jogos:  -------------')
 for jogo in cursor.fetchall():
     print(jogo[1])
